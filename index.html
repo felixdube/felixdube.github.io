@@ -95,16 +95,39 @@ h1 {
   text-wrap: balance;
 }
 
-/* The rule is a rising clock edge: quiet line, accent on the transition. */
+/* The rule is an Ethernet frame start in NRZ: the preamble and start-frame
+   delimiter stay quiet, the payload carries the accent. */
 .edge {
   display: block;
   width: 100%;
-  height: 14px;
+  height: 22px;
   overflow: visible;
 }
-.edge path { fill: none; stroke-width: 1; vector-effect: non-scaling-stroke; }
-.edge .low, .edge .high { stroke: var(--line); }
-.edge .rise { stroke: var(--accent); }
+.edge path {
+  fill: none;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+.edge .pre  { stroke: var(--line); }
+.edge .sfd  { stroke: var(--muted); opacity: 0.55; }
+.edge .data { stroke: var(--accent); }
+
+/* Drawn left to right, in order, the way the bits actually arrive. */
+@media (prefers-reduced-motion: no-preference) {
+  .edge path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: clock-in 1s linear forwards;
+  }
+  .edge .pre  { animation-duration: 0.30s; animation-delay: 0.30s; }
+  .edge .sfd  { animation-duration: 0.30s; animation-delay: 0.60s; }
+  .edge .data { animation-duration: 1.15s; animation-delay: 0.90s; }
+}
+@keyframes clock-in {
+  to { stroke-dashoffset: 0; }
+}
 
 .role {
   margin: 0;
@@ -203,10 +226,11 @@ h1 {
 
   <h1>Félix Dubé</h1>
 
-  <svg class="edge" viewBox="0 0 400 14" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-    <path class="low"  d="M0 11 H 96"/>
-    <path class="rise" d="M96 11 V 3"/>
-    <path class="high" d="M96 3 H 400"/>
+  <svg class="edge" viewBox="0 0 624 22" preserveAspectRatio="none" role="img">
+    <title>Ethernet frame start: the 1010 preamble a receiver locks onto, the start-frame delimiter, then payload bytes 0x46 0x50 0x47 0x41 — "FPGA".</title>
+    <path class="pre"  pathLength="1" d="M0 4 L13 4 L13 18 L26 18 L26 4 L39 4 L39 18 L52 18 L52 4 L65 4 L65 18 L78 18 L78 4 L91 4 L91 18 L104 18"/>
+    <path class="sfd"  pathLength="1" d="M104 18 L104 4 L117 4 L117 18 L130 18 L130 4 L143 4 L143 18 L156 18 L156 4 L169 4 L169 18 L182 18 L182 4 L195 4 L208 4"/>
+    <path class="data" pathLength="1" d="M208 4 L208 18 L221 18 L221 4 L234 4 L247 4 L247 18 L260 18 L273 18 L286 18 L286 4 L299 4 L299 18 L312 18 L325 18 L338 18 L351 18 L364 18 L364 4 L377 4 L377 18 L390 18 L390 4 L403 4 L403 18 L416 18 L416 4 L429 4 L442 4 L455 4 L455 18 L468 18 L481 18 L494 18 L494 4 L507 4 L507 18 L520 18 L520 4 L533 4 L533 18 L546 18 L559 18 L572 18 L585 18 L598 18 L598 4 L611 4 L611 18 L624 18"/>
   </svg>
 
   <p class="role">Senior FPGA Design &amp; Verification Engineer</p>
