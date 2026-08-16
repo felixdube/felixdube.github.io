@@ -1,0 +1,6 @@
+# The CV is published as ciphertext only (cv/resume.enc). The plaintext contains
+# a phone number that is deliberately absent from the public site, and this repo
+# is public -- a single accidental `git add` would put it in the history forever,
+# where deleting the file later does not remove it. So the plaintext is barred
+# from the repo entirely; keep your working copy outside it (~/sandbox/cv).
+*.pdf
