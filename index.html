@@ -65,11 +65,12 @@ body {
 }
 
 .card {
+  --stack-gap: 1.75rem;
   width: 100%;
   max-width: 40rem;
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
+  gap: var(--stack-gap);
 }
 
 .mono {
@@ -80,6 +81,38 @@ body {
 }
 
 /* ---- masthead ---- */
+
+/* Eyebrow and name become one unit so the portrait can sit beside them instead
+   of stacking above the whole card. Grouping them also brings .card's child
+   count to six, which is how many rise delays are defined — the seventh child
+   used to fall through with a 0s delay and animate ahead of everything else. */
+.masthead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(1rem, 4vw, 2rem);
+}
+.ident {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stack-gap);   /* same rhythm as the card, so the two can't drift */
+  min-width: 0;
+}
+
+/* A plate, not an avatar. Square with a hairline in the same colour as the
+   .spec rules, so the photo reads as part of the datasheet rather than floating
+   over it; a circle would be the generic profile-picture move and the page has
+   no other rounded corner. It is the only saturated thing here, so it stays
+   small — the type is still the subject. */
+.portrait {
+  flex: none;
+  width: clamp(5.5rem, 17vw, 7.25rem);
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
 
 .eyebrow {
   color: var(--muted);
@@ -242,9 +275,14 @@ h1 {
 <body>
 <main class="card">
 
-  <p class="eyebrow mono">Montreal, Canada</p>
-
-  <h1>Félix Dubé</h1>
+  <header class="masthead">
+    <div class="ident">
+      <p class="eyebrow mono">Montreal, Canada</p>
+      <h1>Félix Dubé</h1>
+    </div>
+    <img class="portrait" src="portrait.jpg" width="480" height="480" decoding="async"
+         alt="Félix Dubé outdoors in winter — ski goggles and a knit headband, beard and neck gaiter caked in frost, a pack over one shoulder and snowy conifers behind.">
+  </header>
 
   <div class="edge-wrap">
     <div class="edge-clip">
