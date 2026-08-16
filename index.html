@@ -100,38 +100,47 @@ h1 {
    object; the accent marks only the high pulses, which keeps copper to a
    fraction of the rule instead of colouring the whole thing.
 
-   The draw-on is a widening clip rectangle, not stroke-dasharray. Dash offsets
-   are computed along a path's own length, which for a path that is non-uniformly
-   scaled (preserveAspectRatio="none") and stroked in screen space
-   (non-scaling-stroke) does not agree with what gets painted — so the line came
-   apart into fragments for the whole length of the animation. A clip rect lives
-   in the same user space as the geometry and is carried by the same transform,
-   so it cannot fall out of step with it. */
+   The draw-on is clip-path on a plain div, and it avoids two separate traps.
+   stroke-dasharray measures along a path's own length, which disagrees with what
+   is painted once the path is non-uniformly scaled (preserveAspectRatio="none")
+   and stroked in screen space (non-scaling-stroke) — that is what tore the line
+   into fragments while it drew. Animating an SVG <rect>'s width instead depends
+   on SVG geometry properties being animatable as CSS, which Safari does not do
+   reliably; where it is ignored the rect keeps its width attribute and the line
+   simply appears, un-animated. A percentage inset() on an HTML element sidesteps
+   both: no path-length arithmetic, no SVG geometry CSS. */
 .edge {
   display: block;
   width: 100%;
-  height: 24px;
+  height: 22px;
   overflow: visible;
 }
+/* One path, one colour. Splitting the frame into preamble / delimiter / payload
+   and colouring each differently is what made a single signal read as three
+   disjoint pieces — every colour boundary landed mid-waveform and looked like a
+   break in the line. Continuity here is structural: there is only one path, so
+   there are no seams to line up. */
 .edge path {
   fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
   vector-effect: non-scaling-stroke;
-  stroke-linecap: butt;
+  stroke-linecap: square;
   stroke-linejoin: miter;
 }
-.edge .rail { stroke: var(--line);   stroke-width: 1; }
-.edge .sig  { stroke: var(--accent); stroke-width: 1.5; }
 
-/* The rect carries its full width as an attribute, so with motion reduced the
-   line is simply there, undrawn and complete. */
+/* The clip only exists inside the media query, so with motion reduced the line
+   is simply there, undrawn and complete. .edge-wrap is the card child that fades
+   up with its siblings; .edge-clip does the wipe, so the two animations never
+   contend for the same `animation` shorthand. */
 @media (prefers-reduced-motion: no-preference) {
-  .edge .wipe {
-    width: 0;
+  .edge-clip {
+    clip-path: inset(0 100% 0 0);
     animation: trace 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) 0.4s forwards;
   }
 }
 @keyframes trace {
-  to { width: 624px; }
+  to { clip-path: inset(0 -2% 0 0); }
 }
 
 .role {
@@ -231,17 +240,14 @@ h1 {
 
   <h1>Félix Dubé</h1>
 
-  <svg class="edge" viewBox="0 0 624 24" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-    <defs>
-      <clipPath id="edge-wipe">
-        <rect class="wipe" x="0" y="-3" width="624" height="30"/>
-      </clipPath>
-    </defs>
-    <g clip-path="url(#edge-wipe)">
-      <path class="rail" d="M0 17 L624 17"/>
-      <path class="sig" d="M38 17 L38 5 L104 5 L104 17 M138 17 L138 5 L180 5 L180 17"/>
-    </g>
-  </svg>
+  <div class="edge-wrap">
+    <div class="edge-clip">
+      <svg class="edge" viewBox="0 0 624 22" preserveAspectRatio="none" role="img">
+        <title>An Ethernet frame start in NRZ: the 1010 preamble a receiver locks onto, the start-frame delimiter, then the payload bytes 0x46 0x50 0x47 0x41 — "FPGA".</title>
+        <path d="M0 4 L13 4 L13 18 L26 18 L26 4 L39 4 L39 18 L52 18 L52 4 L65 4 L65 18 L78 18 L78 4 L91 4 L91 18 L104 18 L104 4 L117 4 L117 18 L130 18 L130 4 L143 4 L143 18 L156 18 L156 4 L169 4 L169 18 L182 18 L182 4 L195 4 L208 4 L208 18 L221 18 L221 4 L234 4 L247 4 L247 18 L260 18 L273 18 L286 18 L286 4 L299 4 L299 18 L312 18 L325 18 L338 18 L351 18 L364 18 L364 4 L377 4 L377 18 L390 18 L390 4 L403 4 L403 18 L416 18 L416 4 L429 4 L442 4 L455 4 L455 18 L468 18 L481 18 L494 18 L494 4 L507 4 L507 18 L520 18 L520 4 L533 4 L533 18 L546 18 L559 18 L572 18 L585 18 L598 18 L598 4 L611 4 L611 18 L624 18"/>
+      </svg>
+    </div>
+  </div>
 
   <p class="role">Senior FPGA Design &amp; Verification Engineer</p>
 
