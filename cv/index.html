@@ -100,7 +100,8 @@ h1 {
 
 /* ---- the mark ----
    Identical component to the landing page's Ethernet frame, carrying different
-   data: these 48 bits are the first six bytes of resume.enc. The landing page's
+   data: these 48 bits are the first six bytes of resume.enc past the header --
+   ciphertext proper, not the magic. The landing page's
    frame has visible structure -- an alternating preamble, then bytes you can
    read off. This one has none, because that is what good ciphertext looks like
    on a wire. Same instrument, and the difference in the trace is the message. */
@@ -329,8 +330,8 @@ h1 { transition: font-size 0.5s cubic-bezier(0.22, 0.61, 0.36, 1); }
   <div class="edge-wrap">
     <div class="edge-clip">
       <svg class="edge" viewBox="0 0 624 22" preserveAspectRatio="none" role="img">
-        <title>The first six bytes of this document’s ciphertext as an NRZ signal — 100011000101001111010101111011000111001001000001 — structureless, unlike the framed signal on the front page.</title>
-        <path d="M0 4 L13 4 L13 18 L26 18 L39 18 L52 18 L52 4 L65 4 L78 4 L78 18 L91 18 L104 18 L117 18 L117 4 L130 4 L130 18 L143 18 L143 4 L156 4 L156 18 L169 18 L182 18 L182 4 L195 4 L208 4 L221 4 L234 4 L234 18 L247 18 L247 4 L260 4 L260 18 L273 18 L273 4 L286 4 L286 18 L299 18 L299 4 L312 4 L325 4 L338 4 L351 4 L351 18 L364 18 L364 4 L377 4 L390 4 L390 18 L403 18 L416 18 L429 18 L429 4 L442 4 L455 4 L468 4 L468 18 L481 18 L494 18 L494 4 L507 4 L507 18 L520 18 L533 18 L533 4 L546 4 L546 18 L559 18 L572 18 L585 18 L598 18 L611 18 L611 4 L624 4"/>
+        <title>The first six bytes of this document’s ciphertext as an NRZ signal — 001111011001101001111011001010110010111010011101 — structureless, unlike the framed signal on the front page.</title>
+        <path d="M0 18 L13 18 L26 18 L26 4 L39 4 L52 4 L65 4 L78 4 L78 18 L91 18 L91 4 L104 4 L117 4 L117 18 L130 18 L143 18 L143 4 L156 4 L169 4 L169 18 L182 18 L182 4 L195 4 L195 18 L208 18 L221 18 L221 4 L234 4 L247 4 L260 4 L273 4 L273 18 L286 18 L286 4 L299 4 L312 4 L312 18 L325 18 L338 18 L338 4 L351 4 L351 18 L364 18 L364 4 L377 4 L377 18 L390 18 L390 4 L403 4 L416 4 L416 18 L429 18 L442 18 L442 4 L455 4 L455 18 L468 18 L468 4 L481 4 L494 4 L507 4 L507 18 L520 18 L520 4 L533 4 L533 18 L546 18 L559 18 L559 4 L572 4 L585 4 L598 4 L598 18 L611 18 L611 4 L624 4"/>
       </svg>
     </div>
   </div>
@@ -351,7 +352,7 @@ h1 { transition: font-size 0.5s cubic-bezier(0.22, 0.61, 0.36, 1); }
     </div>
     <div class="row">
       <dt class="mono">Payload</dt>
-      <dd><span class="num">40,239</span> bytes of ciphertext</dd>
+      <dd><span class="num">40,136</span> bytes of ciphertext</dd>
     </div>
   </dl>
 
@@ -369,7 +370,7 @@ h1 { transition: font-size 0.5s cubic-bezier(0.22, 0.61, 0.36, 1); }
 
   <section class="reader" id="reader" aria-label="Résumé">
     <div class="reader-bar">
-      <!-- Filled in from the decrypted length at runtime. The 40,239 figure on
+      <!-- Filled in from the decrypted length at runtime. The 40,136 figure on
            the gate is the ciphertext, which is 53 bytes larger than the PDF
            because of the header and GCM tag -- printing it here would label the
            document with the wrong number. -->
