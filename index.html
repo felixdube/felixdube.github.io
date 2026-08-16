@@ -100,11 +100,13 @@ h1 {
    object; the accent marks only the high pulses, which keeps copper to a
    fraction of the rule instead of colouring the whole thing.
 
-   No stroke-dasharray draw-on here. Dash offsets computed against a path that is
-   non-uniformly scaled (preserveAspectRatio="none") and stroked in screen space
-   (non-scaling-stroke) come out wrong at some widths and pixel ratios, which
-   renders the line in disjoint fragments for the length of the animation. The
-   whole SVG fades up with its siblings instead — opacity cannot fragment. */
+   The draw-on is a widening clip rectangle, not stroke-dasharray. Dash offsets
+   are computed along a path's own length, which for a path that is non-uniformly
+   scaled (preserveAspectRatio="none") and stroked in screen space
+   (non-scaling-stroke) does not agree with what gets painted — so the line came
+   apart into fragments for the whole length of the animation. A clip rect lives
+   in the same user space as the geometry and is carried by the same transform,
+   so it cannot fall out of step with it. */
 .edge {
   display: block;
   width: 100%;
@@ -119,6 +121,18 @@ h1 {
 }
 .edge .rail { stroke: var(--line);   stroke-width: 1; }
 .edge .sig  { stroke: var(--accent); stroke-width: 1.5; }
+
+/* The rect carries its full width as an attribute, so with motion reduced the
+   line is simply there, undrawn and complete. */
+@media (prefers-reduced-motion: no-preference) {
+  .edge .wipe {
+    width: 0;
+    animation: trace 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) 0.4s forwards;
+  }
+}
+@keyframes trace {
+  to { width: 624px; }
+}
 
 .role {
   margin: 0;
@@ -218,8 +232,15 @@ h1 {
   <h1>Félix Dubé</h1>
 
   <svg class="edge" viewBox="0 0 624 24" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-    <path class="rail" d="M0 17 L624 17"/>
-    <path class="sig" d="M38 17 L38 5 L104 5 L104 17 M138 17 L138 5 L180 5 L180 17"/>
+    <defs>
+      <clipPath id="edge-wipe">
+        <rect class="wipe" x="0" y="-3" width="624" height="30"/>
+      </clipPath>
+    </defs>
+    <g clip-path="url(#edge-wipe)">
+      <path class="rail" d="M0 17 L624 17"/>
+      <path class="sig" d="M38 17 L38 5 L104 5 L104 17 M138 17 L138 5 L180 5 L180 17"/>
+    </g>
   </svg>
 
   <p class="role">Senior FPGA Design &amp; Verification Engineer</p>
