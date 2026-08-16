@@ -133,10 +133,16 @@ h1 {
    is simply there, undrawn and complete. .edge-wrap is the card child that fades
    up with its siblings; .edge-clip does the wipe, so the two animations never
    contend for the same `animation` shorthand. */
+/* Sweep speed lives here; it is the only number worth tuning. Timing is linear
+   because bits arrive at a constant rate — an ease-out front-loads the reveal
+   and then crawls, which is what made the old, faster sweep read as a flicker
+   rather than a signal being clocked in. */
+.edge-clip { --trace-duration: 2.2s; }
+
 @media (prefers-reduced-motion: no-preference) {
   .edge-clip {
     clip-path: inset(0 100% 0 0);
-    animation: trace 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) 0.4s forwards;
+    animation: trace var(--trace-duration) linear 0.5s forwards;
   }
 }
 @keyframes trace {
